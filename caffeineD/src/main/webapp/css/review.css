@@ -49,7 +49,7 @@ body {
 
 
 .wrap {
-	font-family: Pretendard, -apple-system, BlinkMacSystemFont, 
+	font-family: Pretendard, -apple-system, BlindkMacSystemFont, 
 	system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 
 	'Noto Sans KR', 'Malgun Gothic', sans-serßif;
 	font-size: 10pt;
@@ -155,7 +155,7 @@ p {
 	position:absolute; width:100%; height:100%; object-fit:cover;
 }
 
-#uploadImg {
+#imgFile {
 	position: absolute; 
 	clip: rect(0, 0, 0, 0);
 }

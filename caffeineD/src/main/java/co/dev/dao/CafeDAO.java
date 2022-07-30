@@ -7,7 +7,7 @@ import java.util.List;
 import co.dev.service.CafeService;
 import co.dev.vo.CafeVO;
 
-public class CafeDAO extends DAO implements CafeService {
+public class CafeDAO extends DAO_mac implements CafeService {
 
 	// 카페 페이지 갯수
 	public int cafeCount() {

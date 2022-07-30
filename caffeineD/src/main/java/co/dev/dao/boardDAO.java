@@ -8,7 +8,7 @@ import co.dev.service.boardPageService;
 import co.dev.vo.BoardVO;
 
 
-public class boardDAO extends DAO implements boardPageService {
+public class boardDAO extends DAO_mac implements boardPageService {
 
 	// 게시판 페이지 갯수
 	public int Count() {

@@ -1,39 +1,54 @@
 // 리뷰 인포(평점) 함수 실행
 StarAvg();
 
-// 등록 팝업창
-let target = document.querySelector('#btn_open');
-let btnPopClose = document.querySelector('#btn_close');
-let targetID;
+// 좋아요 버튼 이벤트
+let likeBtns = document.querySelectorAll('.likeBtn');
+for (let i = 0; i < likeBtns.length; i++) {
+	likeBtns[i].addEventListener('click', likeCallBack);
+}
 
-	// 팝업 열기
-target.addEventListener('click', function() {
-	targetID = this.getAttribute('href');
+
+// 평점 버튼 이벤트
+function starValue(btn) {
+	let starBtns = document.querySelectorAll('.starBtn');
+
+	for (let i = 0; i < 5; i++) {
+		let starImg = starBtns[i].childNodes[1];
+		starImg.src = getPathRootJump() + 'img/eptstar.svg.png';
+	}
+
+	for (let i = 0; i < Number(btn.name); i++) {
+		let starImg = starBtns[i].childNodes[1];
+		starImg.src = getPathRootJump() + 'img/star.svg.png';
+	}
+
+	btn.parentNode.childNodes[1].value = btn.name;
+
+} // end of starCallBack()
+
+
+// 등록 모달창 열기
+function modalOpen(btn) {
+	let targetID = btn.id;
 	document.querySelector(targetID).style.display = 'block';
-});
+}
 
-	// 팝업 닫기
-	// ; 작성했던 것들 모두 초기화하기
-btnPopClose.addEventListener('click', function() {
-
-	this.parentNode.parentNode.style.display = 'none';
+// 등록 모달창 닫기
+function modalClose(btn) {
+	btn.parentNode.parentNode.style.display = 'none';
+	let frm = document.forms.insertForm;
 	
-		// 평점
-		// ; 별 비워주기
-		// ; 저장됐던 value 값 삭제
+	// 입력된 내용 모두 초기화
+	frm.reset();
+	
+	// 색칠된 별 초기화
 	let starBtns = document.querySelectorAll('.starBtn');
 	for (let i = 0; i < 5; i++) {
 		let starImg = starBtns[i].childNodes[0];
 		starImg.setAttribute('src', getPathRootJump() + 'img/eptstar.svg.png');
 	}
-	document.querySelector('#starVal').value = '';
 	
-		// 리뷰 내용 삭제
-	document.querySelector('#reviewInsert textarea').value = '';
-	
-		// 업로드된 리뷰 사진
-		// ; firstImg로 변경
-		// ; 업로드된 파일 삭제
+	// 사진 미리보기 초기화
 	let reviewImg = document.querySelector('#reviewImg');
 	let uploadImg = document.querySelector('#uploadImg');
 	let imgDelBtn = document.querySelector('#imgDelBtn');
@@ -46,45 +61,25 @@ btnPopClose.addEventListener('click', function() {
 
 	let topBtn = document.querySelector('#topBtn');
 	topBtn.style.display = 'block';
-});
-
-
-
-
-// 좋아요 버튼 이벤트
-let likeBtns = document.querySelectorAll('.likeBtn');
-for (let i = 0; i < likeBtns.length; i++) {
-	likeBtns[i].addEventListener('click', likeCallBack);
+	
 }
-
-
-// 평점 버튼 이벤트
-let starBtns = document.querySelectorAll('.starBtn');
-for (let i = 0; i < starBtns.length; i++) {
-	starBtns[i].addEventListener('click', starCallBack);
-}
-
 
 // 사진 미리보기 수정, 삭제
-let div_style = 'display:inline-block; position:relative; width:300px; height:300px; margin:5px;';
-let img_style = 'width:100%; height:100%; object-fit:cover;';
-let chk_style = 'width:25px; height:25px; position:absolute; font-size:15px;' +
-	'right:0px; bottom:0px; z-index:999; background-color:rgba(0,0,0,0.5); color:white; border:none;';
-let imgSection = document.querySelector('#imgSection');		// 이미지 전체 div
-let reviewImgDiv = document.querySelector('#reviewImgDiv');	// div 이미지 + 삭제 버튼
-let reviewImg = document.querySelector('#reviewImg');		// img
-let uploadImg = document.querySelector('#uploadImg');		// input[type=file]
+let imgFile = document.querySelector('#imgFile');
+imgFile.addEventListener('change', (changeEvent) => {			
 
-															//<div #imgSection> 
-															//	<div #reviewImgDiv>
-															//		<img #reviewImg>
-															//		<input type="button">
-															//	</div>
-															//	<input type="file" #uploadImg>
-															//</div>
+	let imgSection = document.querySelector('#imgSection');		// 이미지 전체 div
+	let reviewImgDiv = document.querySelector('#reviewImgDiv');	// div 이미지 + 삭제 버튼
+	//let reviewImg = document.querySelector('#reviewImg');		// img
+	//let imgFile = document.querySelector('#imgFile');			// input[type=file]
 
-	// 이미지 미리보기
-uploadImg.addEventListener('change', (changeEvent) => {				
+																//<div #imgSection> 
+																//	<div #reviewImgDiv>
+																//		<img #reviewImg>
+																//		<input type="button">
+																//	</div>
+																//	<input type="file" #imgFile>
+																//</div>	
 
 	const reader = new FileReader();
 	reader.addEventListener('load', function(readerEvent) {
@@ -94,11 +89,9 @@ uploadImg.addEventListener('change', (changeEvent) => {
 		}
 
 		let div = document.createElement('div');	// 위의 html 구조로 new reviewImgDiv를 생성.
-		div.setAttribute('style', div_style);
 		div.setAttribute('id', 'reviewImgDiv')
 
 		let img = document.createElement('img');
-		img.setAttribute('style', img_style);
 		img.setAttribute('id', 'reviewImg')
 		img.setAttribute('src', readerEvent.target.result);
 
@@ -115,19 +108,26 @@ uploadImg.addEventListener('change', (changeEvent) => {
 
 // 업로드된 이미지 삭제 버튼
 function makeX() {
-
+	
+	let chk_style = 'width:25px; height:25px; position:absolute; font-size:15px;' +
+	'right:0px; bottom:0px; z-index:999; background-color:rgba(0,0,0,0.5); color:white; border:none;';
+	
 	let btn = document.createElement('input');
 	btn.setAttribute('type', 'button');
 	btn.setAttribute('value', 'x');
-	btn.setAttribute('id', 'uploadBtn');
+	btn.setAttribute('id', 'imgDelBtn');
 	btn.setAttribute('style', chk_style);
 
-	btn.addEventListener('click', function(e) {
+	btn.addEventListener('click', function() {
+		
+		// 업로드된 이미지를 삭제하면서 기본 이미지로 변경.
+		let reviewImg = document.querySelector('#reviewImg');
+		let imgFile = document.querySelector('#imgFile');
 
 		reviewImg.setAttribute('id', 'firstImg');
 		reviewImg.setAttribute('src', getPathRootJump() + `/img/emptyimg.jpg`);
 		this.remove();
-		uploadImg.value = '';
+		imgFile.value = '';
 
 	})
 
@@ -140,7 +140,6 @@ function makeX() {
 
 // function
 // 평균 평점 조회
-// ; 수정 가능 여부 체크.. 누가봐도 비효율적
 function StarAvg() {
 
 	let cafeNo = document.getElementsByName('cafeNo')[0].value;
@@ -178,44 +177,27 @@ function StarAvg() {
 			reviewCount.appendChild(text);
 
 			// 점수에 따른 평점 개수
-
 			let trs = document.querySelectorAll('tr');
 
 			// 반복문 돌리고 싶따...
-			let td = document.createElement('td');
-			text = document.createTextNode(reviewInfo.starCount_1);
-			td.appendChild(text);
-			trs[0].appendChild(td);
-			td = document.createElement('td');
-			text = document.createTextNode(reviewInfo.starCount_2);
-			td.appendChild(text);
-			trs[1].appendChild(td);
-			td = document.createElement('td');
-			text = document.createTextNode(reviewInfo.starCount_3);
-			td.appendChild(text);
-			trs[2].appendChild(td);
-			td = document.createElement('td');
-			text = document.createTextNode(reviewInfo.starCount_4);
-			td.appendChild(text);
-			trs[3].appendChild(td);
-			td = document.createElement('td');
-			text = document.createTextNode(reviewInfo.starCount_5);
-			td.appendChild(text);
-			trs[4].appendChild(td);
+			let starCountAry = [reviewInfo.starCount_1, reviewInfo.starCount_2, reviewInfo.starCount_3, 
+								reviewInfo.starCount_4, reviewInfo.starCount_5]
+			
+			for (let i=0; i<5; i++) {
+				let td = document.createElement('td');
+				text = document.createTextNode(starCountAry[i]);
+				td.appendChild(text);
+				trs[i].appendChild(td);
+			}
 
+			
 			let graphs = document.querySelectorAll('.star_count_show_color');
 			reviewCount = Number(reviewInfo.reviewCount);
-			let starCount_1 = Number(reviewInfo.starCount_1);
-			let starCount_2 = Number(reviewInfo.starCount_2);
-			let starCount_3 = Number(reviewInfo.starCount_3);
-			let starCount_4 = Number(reviewInfo.starCount_4);
-			let starCount_5 = Number(reviewInfo.starCount_5);
 
-			graphs[0].setAttribute('style', `width: ${120 * (starCount_1 / reviewCount)}px;`);
-			graphs[1].setAttribute('style', `width: ${120 * (starCount_2 / reviewCount)}px;`);
-			graphs[2].setAttribute('style', `width: ${120 * (starCount_3 / reviewCount)}px;`);
-			graphs[3].setAttribute('style', `width: ${120 * (starCount_4 / reviewCount)}px;`);
-			graphs[4].setAttribute('style', `width: ${120 * (starCount_5 / reviewCount)}px;`);
+			starCountAry.forEach(function (val, idx) {
+				graphs[idx].setAttribute('style', `width: ${120 * (Number(val) / reviewCount)}px;`);
+			});
+		
 
 
 		})
@@ -224,74 +206,59 @@ function StarAvg() {
 
 // 좋아요 버튼 콜백
 function likeCallBack() {
-
-	// 버튼을 누르면 해당 리뷰의 전체 좋아요 수 +1
-	// 현재 유저의 좋아요 정보 추가
-
+	// 클릭된 버튼의 id값으로 리뷰 번호 받아오기
 	let reviewNo = this.id.substr(8);
+
+	// 받아온 리뷰 번호로 버튼, 하트 사진, 좋아요 수 변수 지정.
 	let likeBtn = document.getElementById(`likeBtn_${reviewNo}`);
 	let likeHeart = document.getElementById(`heart_${reviewNo}`);
 	let likeCount = document.getElementById(`likeCount_${reviewNo}`);
 
 	if (this.name === 'unlike') {
-
+		// 좋아요가 눌려있지 않을 때
+		// 버튼을 누르면 해당 리뷰의 전체 좋아요 수 +1
+		// 현재 유저의 해당 리뷰에 대한 좋아요 정보 추가
+		
+		// Front : 좋아요 상태 변경, 채워진 하트로 사진 변경, 좋아요 수 +1
 		likeBtn.setAttribute('name', 'like');
 		likeHeart.setAttribute('src', getPathRootJump() + 'img/heart.svg.png');
+		likeCount.innerHTML = String(Number(likeCount.innerHTML) + 1);
+		
+		// Back : 리뷰 번호 넘겨서 서버 작업
+		reviewLike('like', `${reviewNo}`);
 
-		fetch('reviewLike.do', {
-			method: 'post',
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: `job=like&reviewNo=${reviewNo}`
-		})
-			.then(() => {
-				likeCount.innerHTML = String(Number(likeCount.innerHTML) + 1);
-			})
-			.catch(error => console.log(error));
-
-	// 한번 더 누르면 전체 좋아요수 -1
-	// 현재 유저의 좋아요 정보 삭제
 	} else if (this.name === 'like') {
+		// 좋아요가 눌려있을 때
+		// 버튼을 누르면 전체 좋아요 수 -1
+		// 현재 유저의 해당 리뷰에 대한 좋아요 정보 삭제
 
+		// Front : 좋아요 상태 변경, 빈 하트로 사진 변경, 좋아요 수 -1
 		likeBtn.setAttribute('name', 'unlike');
 		likeHeart.setAttribute('src', getPathRootJump() + 'img/eptheart.svg.png')
+		likeCount.innerHTML = String(Number(likeCount.innerHTML) - 1);
+		
+		// Back : 리뷰 번호 넘겨서 서버 작업
+		reviewLike('unlike', `${reviewNo}`);
 
-		let reviewNo = this.id.substr(8);
 
-		fetch('reviewLike.do', {
-			method: 'post',
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: `job=unlike&reviewNo=${reviewNo}`
-		})
-			.then(() => {
-				likeCount.innerHTML = String(Number(likeCount.innerHTML) - 1);
-			})
-			.catch(error => console.log(error));
 	} else if (this.name === 'nonUser') {
-		alert('로그인이 필요합니다.')
-	}
+		// 로그인 유저가 없을 경우 
+		console.log('nonuser');
+		alert('로그인이 필요합니다.');
 
+	}
 
 } //end of likeCallBack()
 
+function reviewLike(state, no) {
+			fetch('reviewLike.do', {
+				method: 'post',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: `job=${state}&reviewNo=${no}`
+			})
+				.catch(error => console.log(error));
+}
 
-// 평점 콜백
-function starCallBack() {
-	let starBtns = document.querySelectorAll('.starBtn');
-
-	for (let i = 0; i < 5; i++) {
-		let starImg = starBtns[i].childNodes[0];
-		starImg.setAttribute('src', getPathRootJump() + 'img/eptstar.svg.png');
-	}
-
-	for (let i = 0; i < Number(this.name); i++) {
-
-		let starImg = starBtns[i].childNodes[0];
-		starImg.setAttribute('src', getPathRootJump() + 'img/star.svg.png');
-	}
-
-	this.parentNode.childNodes[1].value = this.name;
-
-} // end of starCallBack()
 
 
 // 절대 경로

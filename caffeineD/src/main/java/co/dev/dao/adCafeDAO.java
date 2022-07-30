@@ -7,7 +7,7 @@ import java.util.List;
 import co.dev.vo.CafeVO;
 import co.dev.vo.adCafeVO;
 
-public class adCafeDAO extends DAO {
+public class adCafeDAO extends DAO_mac {
 
 	// 메인 광고
 	public List<adCafeVO> selectAdCafe() {

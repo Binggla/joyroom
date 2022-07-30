@@ -1,11 +1,11 @@
 // 수정 팝업
 let target = document.querySelectorAll('.btn_open');
 let btnPopClose = document.querySelector('#btn_close');
-	// 팝업 열기
-for (let i = 0; i<target.length; i++) {
+// 팝업 열기
+for(let i=0; i<target.length; i++) {
 	target[i].addEventListener('click', openPopCallBack);
 }
-	// 팝업 닫기
+// 팝업 닫기
 btnPopClose.addEventListener('click', closePopCallBack);
 
 	
@@ -49,122 +49,121 @@ for (let i = 0; i < starBtns.length; i++) {
 }
 
 
-// 사진 업로드 시 미리보기, 삭제
-let div_style = 'display:inline-block; position:relative; width:300px; height:300px; margin:5px;';
-let img_style = 'position:absolute; width:100%; height:100%; object-fit:cover;';
-
-let uploadImg = document.querySelector('#uploadImg');
-let imgSection = document.querySelector('#imgSection');	
+// 사진 미리보기 수정, 삭제
+let imgFile = document.querySelector('#imgFile');
 
 // 이미지 미리보기
-uploadImg.addEventListener('change', function(changeEvent) {
+imgFile.addEventListener('change', function(changeEvent) {
+	
+	let imgSection = document.querySelector('#imgSection');		
+	let reviewImgDiv = document.querySelector('#reviewImgDiv');	
 	
 	const reader = new FileReader();
 	reader.addEventListener('load', function(readerEvent) {
 
-		var reviewImgDiv = document.querySelector('#reviewImgDiv');	
-
-		if (reviewImgDiv) {
+		if (reviewImgDiv) {			// 이미 존재하는 이미지가 있다면(first or review) 삭제.
 			reviewImgDiv.remove();
 		}
 
-		let div = document.createElement('div');
-		div.setAttribute('style', div_style);
+		let div = document.createElement('div');	// 위의 html 구조로 new reviewImgDiv를 생성.
 		div.setAttribute('id', 'reviewImgDiv')
 
 		let img = document.createElement('img');
-		img.setAttribute('style', img_style);
 		img.setAttribute('id', 'reviewImg')
 		img.setAttribute('src', readerEvent.target.result);
 
-		imgSection.appendChild(div);	//<div id="imgSection"><div></div></div>
-		div.appendChild(img)			//<div id="imgSection"><div><img></div></div>
-		div.appendChild(makeX());		//<div id="imgSection"><div><img><btn></btn></div></div>
+		div.appendChild(img)			
+		div.appendChild(makeX());		
+		imgSection.appendChild(div);	
 
 	});
 
 	const img = changeEvent.target.files[0];
 	reader.readAsDataURL(img);
-	
+
 })
 
-// 이미지 삭제 버튼
+// 업로드된 이미지 삭제 버튼
 function makeX() {
-
-	let reviewImg = document.querySelector('#reviewImg');
-	let uploadImg = document.querySelector('#uploadImg');
 	
 	let chk_style = 'width:25px; height:25px; position:absolute; font-size:15px;' +
-        'right:0px; bottom:0px; z-index:999; background-color:rgba(0,0,0,0.5); color:white; border:none;';
-
+	'right:0px; bottom:0px; z-index:999; background-color:rgba(0,0,0,0.5); color:white; border:none;';
+	
 	let btn = document.createElement('input');
 	btn.setAttribute('type', 'button');
 	btn.setAttribute('value', 'x');
 	btn.setAttribute('id', 'imgDelBtn');
-	btn.setAttribute('style', chk_style); 
-	
-	btn.addEventListener('click', function(e) {
+	btn.setAttribute('style', chk_style);
+
+	btn.addEventListener('click', function() {
 		
+		// 업로드된 이미지를 삭제하면서 기본 이미지로 변경.
+		let reviewImg = document.querySelector('#reviewImg');
+		let imgFile = document.querySelector('#imgFile');
+
 		reviewImg.setAttribute('id', 'firstImg');
 		reviewImg.setAttribute('src', getPathRootJump() + `/img/emptyimg.jpg`);
 		this.remove();
-		uploadImg.value = '';
-		
+		imgFile.value = '';
+
 	})
 
 	return btn;
 }
 
-
-//좋아요 버튼 콜백
+// 좋아요 버튼 콜백
 function likeCallBack() {
-	
-	console.log('like btn')
-
-	// 버튼을 누르면 해당 리뷰의 전체 좋아요 수 +1
-	// 현재 유저의 좋아요 정보 추가 -> 다시 들어왔을 때 좋아요가 미리 선택되어 있는 기능 구현하기 위함.
+	// 클릭된 버튼의 id값으로 리뷰 번호 받아오기
 	let reviewNo = this.id.substr(8);
+
+	// 받아온 리뷰 번호로 버튼, 하트 사진, 좋아요 수 변수 지정.
 	let likeBtn = document.getElementById(`likeBtn_${reviewNo}`);
 	let likeHeart = document.getElementById(`heart_${reviewNo}`);
 	let likeCount = document.getElementById(`likeCount_${reviewNo}`);
 
 	if (this.name === 'unlike') {
-		console.log('like')
+		// 좋아요가 눌려있지 않을 때
+		// 버튼을 누르면 해당 리뷰의 전체 좋아요 수 +1
+		// 현재 유저의 해당 리뷰에 대한 좋아요 정보 추가
+		
+		// Front : 좋아요 상태 변경, 채워진 하트로 사진 변경, 좋아요 수 +1
 		likeBtn.setAttribute('name', 'like');
-		likeHeart.setAttribute('src', getPathRootJump() + '/img/heart.svg.png');
-
-		fetch(getPathRootJump() + 'reviewLike.do', {
-			method: 'post',
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: `job=like&reviewNo=${reviewNo}`
-		})
-			.then(() => {
-				likeCount.innerHTML = String(Number(likeCount.innerHTML) + 1);
-			})
-			.catch(error => console.log(error));
-
-		// 한번 더 누르면 전체 좋아요수 -1 / 현재 유저의 좋아요 정보 삭제
+		likeHeart.setAttribute('src', getPathRootJump() + 'img/heart.svg.png');
+		likeCount.innerHTML = String(Number(likeCount.innerHTML) + 1);
+		
+		// Back : 리뷰 번호 넘겨서 서버 작업
+		reviewLike('like', `${reviewNo}`);
 
 	} else if (this.name === 'like') {
-		console.log('unlike')
+		// 좋아요가 눌려있을 때
+		// 버튼을 누르면 전체 좋아요 수 -1
+		// 현재 유저의 해당 리뷰에 대한 좋아요 정보 삭제
+
+		// Front : 좋아요 상태 변경, 빈 하트로 사진 변경, 좋아요 수 -1
 		likeBtn.setAttribute('name', 'unlike');
-		likeHeart.setAttribute('src', getPathRootJump() + '/img/eptheart.svg.png')
+		likeHeart.setAttribute('src', getPathRootJump() + 'img/eptheart.svg.png')
+		likeCount.innerHTML = String(Number(likeCount.innerHTML) - 1);
+		
+		// Back : 리뷰 번호 넘겨서 서버 작업
+		reviewLike('unlike', `${reviewNo}`);
 
-		let reviewNo = this.id.substr(8);
 
-		fetch('reviewLike.do', {
-			method: 'post',
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: `job=unlike&reviewNo=${reviewNo}`
-		})
-			.then(() => {
-				likeCount.innerHTML = String(Number(likeCount.innerHTML) - 1);
-			})
-			.catch(error => console.log(error));
+	} else if (this.name === 'nonUser') {
+		// 로그인 유저가 없을 경우 
+		alert('로그인이 필요합니다.');
+
 	}
 
 } //end of likeCallBack()
 
+function reviewLike(state, no) {
+			fetch('reviewLike.do', {
+				method: 'post',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				body: `job=${state}&reviewNo=${no}`
+			})
+				.catch(error => console.log(error));
+}
 
 // 평점 콜백
 function starCallBack() {
@@ -181,7 +180,7 @@ function starCallBack() {
 		starImg.setAttribute('src', getPathRootJump() + '/img/star.svg.png');
 	}
 
-	this.parentNode.childNodes[1].value = this.name;
+	document.querySelector('#starVal').value = this.name;
 
 } //end of starCallBack()
 
@@ -193,7 +192,6 @@ function openPopCallBack() {
 	let popDiv = document.querySelector(targetID);
 	popDiv.style.display = 'block';
 	
-
 	let reviewNo = this.parentNode.childNodes[3].childNodes[0].name.substr(7);
 
 	fetch(getPathRootJump() + 'reviewSelect.do', {
@@ -253,13 +251,13 @@ function closePopCallBack(e) {
 	
 
 		let reviewImg = document.querySelector('#reviewImg');
-		let uploadImg = document.querySelector('#uploadImg');
+		let imgFile = document.querySelector('#imgFile');
 		let imgDelBtn = document.querySelector('#imgDelBtn');
 			if (reviewImg) {
 				reviewImg.setAttribute('id', 'firstImg');
 				reviewImg.setAttribute('src', getPathRootJump() + `/img/emptyimg.jpg`);
 				imgDelBtn.remove();
-				uploadImg.value = '';
+				imgFile.value = '';
 			}
 		
 		let topBtn = document.querySelector('#topBtn');

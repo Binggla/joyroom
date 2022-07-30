@@ -7,7 +7,7 @@ import java.util.List;
 import co.dev.service.NoticeService;
 import co.dev.vo.NoticeVO;
 
-public class NoticeDAO extends DAO implements NoticeService {
+public class NoticeDAO extends DAO_mac implements NoticeService {
 
 	// 공지사항 리스트 갯수(페이징)
 	public int noticeCount() {

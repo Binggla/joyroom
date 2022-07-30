@@ -8,7 +8,7 @@ import co.dev.service.UserService;
 import co.dev.vo.CafeVO;
 import co.dev.vo.UserVO;
 
-public class UserDAO extends DAO implements UserService {
+public class UserDAO extends DAO_mac implements UserService {
 
 	// 회원가입
 	public void userInsert(UserVO vo) {

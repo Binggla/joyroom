@@ -6,7 +6,7 @@ import java.util.List;
 
 import co.dev.vo.CommentVO;
 
-public class CommentDAO extends DAO {
+public class CommentDAO extends DAO_mac {
 	
 	public void insertComment(CommentVO comment) {
 		conn();

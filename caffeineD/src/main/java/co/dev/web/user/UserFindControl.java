@@ -63,7 +63,7 @@ public class UserFindControl implements Controller {
 			UserVO uvo = reService.userSelect(inputId);
 			
 
-			if(userId.isEmpty()) {
+			if(uvo == null) {
 				request.setAttribute("error", "입력하신 정보로 조회되는 아이디가 없습니다.");
 				request.getRequestDispatcher("/view/user/findPwd.tiles").forward(request, response);
 				return;

@@ -146,7 +146,7 @@
 							</div>
 							<div class="btn_section text_right">
 								<a href="#reviewUpdate" class="btn_open"><button
-										type="button" class=" mini_button button_no_back cursor_pointer"
+										type="button" class="mini_button button_no_back cursor_pointer"
 										onclick="javascript:topBtnNone();">수정</button></a> <a href="#"><button
 										class="delBtn mini_button button_no_back cursor_pointer" name="delBtn_${review.no }" type="button"
 										>삭제</button></a>
@@ -165,55 +165,55 @@
 		</c:choose>
 
 		<div class="wrap">
-			<!-- 리뷰 수정 팝업 -->
+			<!-- 리뷰 수정 모달 -->
 			<div id="reviewUpdate" class="pop_wrap">
-
+				<!-- 모달 닫기 -->
 				<div class="pop_inner">
 					<button type="button" id="btn_close" class="button_no_back">X</button>
 					<br>
+					<!-- 수정 폼 -->
 					<form
 						action="${pageContext.servletContext.contextPath }/reviewUpdate.do"
 						method="post" enctype="multipart/form-data"
 						onsubmit="return submitCheck();">
+						
+						<!-- 등록 폼 왼쪽 섹션 -->
 						<div class="pop_left">
 							<input type="hidden" id="reviewNo" name="reviewNo">
+							
+							<!-- 사진 업로드, 미리보기 -->
 							<div id="imgSection">
 								<div id="reviewImgDiv">
 									<img id="firstImg"
 										src="${pageContext.servletContext.contextPath }/img/emptyimg.jpg">
 								</div>
 							</div>
-							<label for="uploadImg">사진 올리기</label> <input id="uploadImg"
-								name="img" type="file" accept="image/jpg, image/png, image/jpeg">
+			
+							<label for="imgFile">사진 올리기</label> 
+							<input id="imgFile" name="img" type="file" 
+									accept="image/jpg, image/png, image/jpeg">	
 						</div>
+						
+						<!-- 등록 폼 오른쪽 섹션 -->
 						<div class="pop_right">
+						
+							<!-- 평점 버튼 -->
 							<div id="insertStar">
 								<input id="starVal" type="hidden" name="star" value="">
-								<button class="starBtn button_no_back" type="button" name="1">
-									<img
-										src="${pageContext.servletContext.contextPath }/img/eptstar.svg.png">
-								</button>
-								<button class="starBtn button_no_back" type="button" name="2">
-									<img
-										src="${pageContext.servletContext.contextPath }/img/eptstar.svg.png">
-								</button>
-								<button class="starBtn button_no_back" type="button" name="3">
-									<img
-										src="${pageContext.servletContext.contextPath }/img/eptstar.svg.png">
-								</button>
-								<button class="starBtn button_no_back" type="button" name="4">
-									<img
-										src="${pageContext.servletContext.contextPath }/img/eptstar.svg.png">
-								</button>
-								<button class="starBtn button_no_back" type="button" name="5">
-									<img
-										src="${pageContext.servletContext.contextPath }/img/eptstar.svg.png">
-								</button>
+								<c:forEach var="i" begin="1" end="5">
+									<button class="starBtn button_no_back" type="button" name="${i }">
+										<img src="${pageContext.servletContext.contextPath }/img/eptstar.svg.png">
+									</button>
+								</c:forEach>
 							</div>
+							
+							<!-- 리뷰 내용 -->
 							<textarea id="rContent" name="content"
 								placeholder="리뷰는 10자 이상 입력해 주세요.&#13;&#10;5MB 이하 PNG, JPG, JPEG 형식의&#13;&#10;파일 1개만 등록 가능합니다."
 								cols="30" rows="9" minlength="10" required
 								oninvalid="this.setCustomValidity('리뷰를 10자 이상 입력해주세요.')"></textarea>
+							
+							<!-- 업로드 버튼 -->
 							<div style="text-align: center;">
 								<button class="review_btn" type="submit">Upload</button>
 							</div>

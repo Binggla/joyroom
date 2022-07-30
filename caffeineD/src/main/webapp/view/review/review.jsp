@@ -53,8 +53,8 @@
 			<!-- 리뷰 작성 버튼, 내 리뷰 안내 -->
 			<c:if test="${!empty user }">
 				<div>
-					<button href="#reviewInsert" id="btn_open" class="review_btn"
-						onclick="topBtnNone();location.href='#reviewInsert';">Write</button>
+					<button id="#reviewInsert" class="review_btn"
+						onclick="topBtnNone(); modalOpen(this);">Write</button>
 				</div>
 				<div class="review text_center">
 					<p>리뷰는 좋아요 순으로 나열되며<br>
@@ -118,6 +118,13 @@
 							<span class="like_section"> 
 								<span id="likeCount_${review.no }">${review.like }</span>
 									<c:choose>
+										<c:when test="${empty user }">
+											<button id="likeBtn_${review.no }" class="likeBtn"
+												type="button" name="nonUser">
+												<img id="heart_${review.no }"
+													src="${pageContext.servletContext.contextPath }/img/eptheart.svg.png">
+											</button>
+										</c:when>
 										<c:when test="${review.likeCheck == 'true' }">
 											<button id="likeBtn_${review.no }" class="likeBtn"
 												type="button" name="like">
@@ -165,7 +172,7 @@
 		<div id="reviewInsert" class="pop_wrap">
 			<div class="pop_inner">
 				<!-- 팝업 닫기 -->
-				<button type="button" id="btn_close" class="button_no_back">X</button>
+				<button type="button" class="button_no_back" onclick="modalClose(this)">X</button>
 				
 				<!-- 등록 폼 -->
 				<form name="insertForm"
@@ -185,7 +192,7 @@
 							</div>
 						</div>
 			
-						<label for="uploadImg">사진 올리기</label> <input id="uploadImg"
+						<label for="imgFile">사진 올리기</label> <input id="imgFile"
 							name="img" type="file" accept="image/jpg, image/png, image/jpeg">	
 					</div>
 					
@@ -195,18 +202,11 @@
 						<!-- 평점 버튼 -->
 						<div id="insertStar">
 							<input id="starVal" type="hidden" name="star" value="">
-							
-							<%
-							String path = request.getContextPath();
-							
-							for (int i=1; i<6; i++) {
-								out.print("<button class=\"starBtn button_no_back\" type=\"button\" name=\"");
-								out.print(i);
-								out.print("\"><img src=\"");
-								out.print(path);
-								out.print("/img/eptstar.svg.png\"></button>");
-							}
-							%>
+							<c:forEach var="i" begin="1" end="5">
+								<button class="starBtn button_no_back" type="button" name="${i }" onclick="starValue(this)">
+									<img src="${pageContext.servletContext.contextPath }/img/eptstar.svg.png">
+								</button>
+							</c:forEach>
 						</div>
 						
 						<!-- 리뷰 내용 -->
@@ -225,7 +225,7 @@
 		</div>
 	</div>
 
-</body>
+
 
 <script src="js/review.js"></script>
 <script>
@@ -236,7 +236,7 @@
 	let reviews = document.getElementsByClassName('review');
 	let moreBtn = document.getElementById('moreBtn');
 
-	if (reviews.length < 5) {
+	if (reviews.length <= 3 ) {
 		moreBtn.style.display = 'none';
 	} else {
 		for (let i = firstCount; i < reviews.length; i++) {
@@ -245,7 +245,6 @@
 	}
 
 	function listMore() {
-		console.log('more');
 		for (let i = showCount; i < showCount + moreCount; i++) {
 			if (reviews[i] != null) {
 				reviews[i].style.display = 'block';
@@ -269,4 +268,5 @@
 		topBtn.style.display = 'none';
 	}
 </script>
+</body>
 </html>

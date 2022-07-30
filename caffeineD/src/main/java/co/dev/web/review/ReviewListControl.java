@@ -30,6 +30,7 @@ public class ReviewListControl implements Controller {
 		
 		HttpSession session = request.getSession();
 		UserVO vo = (UserVO) session.getAttribute("user");
+		
 		String userId = null;
 		if(vo != null) {
 			userId = vo.getId();
@@ -48,7 +49,6 @@ public class ReviewListControl implements Controller {
 				request.setAttribute("cafeinfo", cvo);
 				request.setAttribute("reviewList", reviewList);
 				request.getRequestDispatcher("/view/cafe/cafeInfo.tiles").forward(request, response);
-				return;
 
 			}
 
